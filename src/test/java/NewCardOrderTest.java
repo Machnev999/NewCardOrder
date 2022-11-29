@@ -6,8 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+
 
 public class NewCardOrderTest {
 
@@ -15,7 +16,10 @@ public class NewCardOrderTest {
 
     @BeforeAll
     public static void setUpAll() {
-        System.setProperty("webdriver.chrome.driver", "./driver/chromedriver.exe");
+        WebDriverManager.chromedriver().setup();
+
+
+        //System.setProperty("webdriver.chrome.driver", "./driver/chromedriver.exe");
     }
 
     @BeforeEach
@@ -25,7 +29,6 @@ public class NewCardOrderTest {
         options.addArguments("--no-sandbox");
         options.addArguments("--headless");
         driver = new ChromeDriver(options);
-        driver.get("http://localhost:9999/");
     }
 
     @AfterEach
@@ -34,17 +37,22 @@ public class NewCardOrderTest {
         driver = null;
     }
 
-    //Заполняем все поля. Заявка оформляется успешно
+
     @Test
-    public void SendSuccesForm() {
+    public void SendSuccessForm() {
+        driver.get("http://localhost:9999/");
+
         driver.findElement(By.cssSelector("[type='text']")).sendKeys("Иван Иван");
         driver.findElement(By.cssSelector("[type='tel']")).sendKeys("+79998887766");
         driver.findElement(By.cssSelector(".checkbox__box")).click();
         driver.findElement(By.cssSelector("button")).click();
 
-        String actualText = driver.findElement(By.cssSelector("[data-test-id='order-success']")).getText().trim();
-        String expectedText = "Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.";
+        String expected = "Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.";
+        String actual = driver.findElement(By.cssSelector("[data-test-id='order-success']")).getText().trim();
 
-        assertEquals(expectedText, actualText, "Текст сообщения не совпадает");
+
+        assertEquals(expected, actual);
     }
+
+
 }
